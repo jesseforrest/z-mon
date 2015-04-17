@@ -1,8 +1,19 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
-	xmlns:i="jelly:fmt">
+	xmlns:i="jelly:fmt" xmlns:html="jelly:html" xmlns:x="jelly:xml">
 
-<style>
+<st:contentType value="text/html;charset=UTF-8" />
+<x:doctype name="html" />
+
+<html>
+<head>
+    <title>Pipeline Monitor</title>
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="refresh" content="${it.refresh}" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <style>
     /* style sheet */
     html {
     overflow: hidden; }
@@ -443,9 +454,7 @@
     to {
     background-color: #bc330d;
     -webkit-box-shadow: 0 0 9px #333333; } }
-</style>
-
-	<meta http-equiv="refresh" content="${it.refresh}" />
+    </style>
 
 	<div id="header">
 
@@ -576,5 +585,7 @@
 		Zynx Health, 2012-2014
 	</div>
 
+</body>
+</html>
 </j:jelly>
 

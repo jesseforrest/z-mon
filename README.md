@@ -17,7 +17,7 @@ Apache Maven.  You can download it from:
   match your version of Jenkins.  You can determine your version of Jenkins, by
   looking at the bottom right of a Jenkins page.
 5. Run Maven on this directory. For example:
-  ~/Downloads/apache-maven-3.2.1/bin/mvn clean install
+  ~/Downloads/apache-maven-3.2.5/bin/mvn clean install
 6. An .hpi file should be created in the target directory. For example:
   ls -al target/
 7. You can then upload the plugin via the "Advanced" tab on the Jenkins Manage
