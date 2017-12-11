@@ -1,3 +1,4 @@
+<?jelly escape-by-default='false'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
 	xmlns:i="jelly:fmt" xmlns:html="jelly:html" xmlns:x="jelly:xml">
@@ -491,7 +492,9 @@
       </j:if>
 
       <j:if test="${it.displayNameJob2 != ''}">
-         <div class="arrow-right"></div>
+         <j:if test="${it.isSequential}">
+           <div class="arrow-right"></div>
+         </j:if>
 
          <div class="job-container">
             <h2 class="job-name">${it.displayNameJob2}</h2>
@@ -512,7 +515,9 @@
       </j:if>
 
       <j:if test="${it.displayNameJob3 != ''}">
-         <div class="arrow-right"></div>
+         <j:if test="${it.isSequential}">
+           <div class="arrow-right"></div>
+         </j:if>
 
          <div class="job-container">
             <h2 class="job-name">${it.displayNameJob3}</h2>
@@ -533,7 +538,9 @@
       </j:if>
 
       <j:if test="${it.displayNameJob4 != ''}">
-         <div class="arrow-right"></div>
+         <j:if test="${it.isSequential}">
+           <div class="arrow-right"></div>
+         </j:if>
 
          <div class="job-container">
             <h2 class="job-name">${it.displayNameJob4}</h2>
@@ -554,7 +561,9 @@
       </j:if>
 
       <j:if test="${it.displayNameJob5 != ''}">
-         <div class="arrow-right"></div>
+         <j:if test="${it.isSequential}">
+           <div class="arrow-right"></div>
+         </j:if>
 
          <div class="job-container">
             <h2 class="job-name">${it.displayNameJob5}</h2>
@@ -581,7 +590,7 @@
 	<!--</div> -->
 
 	<div id="footer">
-		Created by Aslan Brooke, Steve Moyer, Alex Tatiyants, and Jesse Forrest -
+		Created by Aslan Brooke, Steve Moyer, Alex Tatiyants, Jesse Forrest, Danny Orh -
 		Zynx Health, 2012-2014
 	</div>
 
