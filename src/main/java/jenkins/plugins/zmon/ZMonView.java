@@ -2,6 +2,7 @@ package jenkins.plugins.zmon;
 
 import hudson.Extension;
 import hudson.model.*;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import javax.servlet.ServletException;
@@ -9,8 +10,8 @@ import java.math.BigDecimal;
 import java.io.IOException;
 
 public class ZMonView extends ListView {
-	private final int MILLISECONDS_IN_A_MINUTE = 60000;
-	private final double MINUTES_IN_AN_HOUR = 60.0;
+	private static final int MILLISECONDS_IN_A_MINUTE = 60000;
+	private static final double MINUTES_IN_AN_HOUR = 60.0;
 
 	@DataBoundConstructor
 	public ZMonView(String name) {
@@ -29,6 +30,7 @@ public class ZMonView extends ListView {
 	public String getTeamName() { return teamName; }
 	public String getTeamLogoURL() { return teamLogoURL; }
 	public String getRefresh() { return refresh; }
+	public Boolean getIsSequential() { return isSequential; }
 
 	public String getActualNameJob1() { return actualNameJob1; }
 	public String getActualNameJob2() { return actualNameJob2; }
@@ -44,6 +46,7 @@ public class ZMonView extends ListView {
 
 	private String teamName;
 	private String teamLogoURL;
+	private Boolean isSequential;
 
 	private String actualNameJob1;
 	private String actualNameJob2;
@@ -65,6 +68,7 @@ public class ZMonView extends ListView {
 		super.submit(req);
 		this.teamName = (req.getParameter("teamName") != null) ? req.getParameter("teamName") : "Team Name";
 		this.teamLogoURL = (req.getParameter("teamLogoURL") != null) ? req.getParameter("teamLogoURL") : "";
+		this.isSequential = req.getParameter("_.isSequential") != null ;
 
 		this.actualNameJob1 = (req.getParameter("actualNameJob1") != null) ? req.getParameter("actualNameJob1") : "";
 		this.actualNameJob2 = (req.getParameter("actualNameJob2") != null) ? req.getParameter("actualNameJob2") : "";
@@ -120,24 +124,27 @@ public class ZMonView extends ListView {
 	public String getJob5Status() { return getStatus(actualNameJob5); }
 
 	private String getCurrentBuildDuration(String jobName) {
-		AbstractProject tli = (AbstractProject)(Hudson.getInstance().getItem(jobName));
 
-		if (tli.getLastBuild().isBuilding()) {
-			return convertDurationToDisplay((System.currentTimeMillis() - tli.getLastBuild().getTimeInMillis()));
-		}
-		else {
-			return convertDurationToDisplay(tli.getLastBuild().getDuration());
-		}
+		Job tli = (Job)Jenkins.getInstance().getItem(jobName);
+
+			Run lastBuild = tli != null ? tli.getLastBuild() : null;
+			if (lastBuild != null && lastBuild.isBuilding()) {
+				return convertDurationToDisplay((System.currentTimeMillis() - lastBuild.getTimeInMillis()));
+			}
+			else {
+				return convertDurationToDisplay(lastBuild != null ? lastBuild.getDuration() : 0);
+			}
+
 	}
 
 	private String getPercentCompleted(String jobName) {
-		AbstractProject tli = (AbstractProject) (Hudson.getInstance().getItem(jobName));
-		AbstractBuild lastBuild = (AbstractBuild) tli.getLastBuild();
+		Job tli = (Job)Jenkins.getInstance().getItem(jobName);
+		Run lastBuild = tli != null ? tli.getLastBuild() : null;
 		long percentCompleted = 0;
 		long duration = 0;
 		long estimatedDuration = 0;
 
-		if (lastBuild.isBuilding()) {
+		if (lastBuild != null && lastBuild.isBuilding()) {
 			duration = System.currentTimeMillis() - lastBuild.getTimeInMillis();
 			estimatedDuration = lastBuild.getEstimatedDuration();
 
@@ -161,13 +168,13 @@ public class ZMonView extends ListView {
 		return convertDurationToDisplay((System.currentTimeMillis() - getLastBuild(jobName).getTimeInMillis()));
 	}
 
-	private AbstractBuild getLastBuild(String jobName) {
-		AbstractProject tli = (AbstractProject) (Hudson.getInstance().getItem(jobName));
-		AbstractBuild lastBuild = (AbstractBuild) tli.getLastBuild();
+	private Run getLastBuild(String jobName) {
+		Job tli = (Job)Jenkins.getInstance().getItem(jobName);
+		Run lastBuild = tli != null ? tli.getLastBuild() : null;
 
 		// this logic exists because getLastBuild() will return the currently running build
-		if (lastBuild.isBuilding()) {
-			return (AbstractBuild) tli.getBuilds().get(1);
+		if (lastBuild != null && lastBuild.isBuilding()) {
+			return tli.getBuilds().get(1);
 		}
 		else {
 			return lastBuild;
@@ -180,23 +187,27 @@ public class ZMonView extends ListView {
 			return "pass";
 		} else if (lastBuildStatusSummary.equals("aborted")) {
 			return "aborted";
-		} 
+		}
 		return "fail";
 	}
 
 	private String getLastRunStatus(String jobName) {
-		return getLastBuild(jobName).getBuildStatusSummary().message.toString();
+		return getLastBuild(jobName).getBuildStatusSummary().message;
 	}
 
 	private String getStatus(String jobName) {
-		AbstractProject tli = (AbstractProject) (Hudson.getInstance().getItem(jobName));
 
-		if (tli.isBuilding()) {
+		Job tli = (Job)Jenkins.getInstance().getItem(jobName);
+		if (tli != null && tli.isBuilding()) {
 			return "running";
 		} else {
-			if (tli.getLastBuild().getResult().toString().equalsIgnoreCase("success")) {
+
+			Run lastBuild = tli != null ? tli.getLastBuild() : null;
+			Result result = lastBuild != null ? lastBuild.getResult() : null;
+			String resultString = result != null ? result.toString() : "";
+			if (resultString.equalsIgnoreCase("success")) {
 				return "passed";
-			} else if (tli.getLastBuild().getResult().toString().equalsIgnoreCase("aborted")) {
+			} else if (resultString.equalsIgnoreCase("aborted")) {
 				return "aborted";
 			} else {
 				return "failed";
