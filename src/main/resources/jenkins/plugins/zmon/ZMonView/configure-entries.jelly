@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
 	xmlns:i="jelly:fmt">
@@ -7,6 +8,9 @@
 	<f:entry title="${%Team / Project Logo URL}" field="teamLogoURL">
 		<f:textbox id="zmon.teamLogo" name="teamLogoURL" />
 	</f:entry>
+    <f:entry title="${%Sequential Jobs?}" field="isSequential" description="If checked, the view will indicate flow.">
+      <f:checkbox/>
+    </f:entry>
 	<f:entry title="${%Job 1 Actual Name}" field="actualNameJob1">
 		<f:textbox id="zmon.actualNameJob1" name="actualNameJob1" />
 	</f:entry>
