@@ -3,6 +3,8 @@ z-mon
 
 A jenkins build monitor plugin
 
+![Build Monitor](https://user-images.githubusercontent.com/2047790/55690291-5201ab00-5944-11e9-8387-62a551a44d47.png)
+
 How to Build and Install Z-Mon
 ------------------------------
 1. Pull the latest z-mon source from GitHub to your local machine
@@ -22,5 +24,3 @@ Apache Maven.  You can download it from:
   ls -al target/
 7. You can then upload the plugin via the "Advanced" tab on the Jenkins Manage
 Plugins page.
-
-
